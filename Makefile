@@ -22,8 +22,8 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS)) -I./include
 WCPPFLAGS ?= $(INC_FLAGS) -std=c11 -Wall -m64 -O2
 LCPPFLAGS ?= $(INC_FLAGS) -std=c11 -Wall -m64 -O2
 
-WLDFLAGS = ../lib/libwren.ucrt.a -lopengl32 -lgdi32
-LLDFLAGS = ../lib/libwren.l.a -lGLU -lGL -lX11
+WLDFLAGS = ./lib/libwren.ucrt.a -lopengl32 -lgdi32
+LLDFLAGS = ./lib/libwren.l.a -lGLU -lGL -lX11
 
 $(WBUILD_DIR)/phatt.exe: $(WOBJS)
 	$(eval LDFLAGS=$(WLDFLAGS))

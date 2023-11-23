@@ -2142,12 +2142,16 @@ static PFNWGLSWAPINTERVALFARPROC_ wglSwapIntervalEXT_ = 0;
 int tigrGAPIBegin(Tigr* bmp) {
     TigrInternal* win = tigrInternal(bmp);
 
-    return wglMakeCurrent(win->gl.dc, win->gl.hglrc) ? 0 : -1;
+    if (wglGetCurrentContext() != win->gl.hglrc)
+    	return wglMakeCurrent(win->gl.dc, win->gl.hglrc) ? 0 : -1;
+     else
+     	return 0;
 }
 
 int tigrGAPIEnd(Tigr* bmp) {
     (void)bmp;
-    return wglMakeCurrent(NULL, NULL) ? 0 : -1;
+    //return wglMakeCurrent(NULL, NULL) ? 0 : -1;
+    return 0;
 }
 
 static BOOL UnadjustWindowRectEx(LPRECT prc, DWORD dwStyle, BOOL fMenu, DWORD dwExStyle) {
@@ -2211,7 +2215,8 @@ LRESULT CALLBACK tigrWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
             }
             return 0;
         case WM_SIZING:
-            if (win && !(win->flags & TIGR_NORESIZE)) {
+        	if (win && win->flags & TIGR_NORESIZE) return FALSE;
+            if (win) {
                 // Calculate scale-constrained sizes.
                 RECT* rc = (RECT*)lParam;
                 int dx, dy;
@@ -2380,7 +2385,11 @@ Tigr* tigrWindow(int w, int h, const char* title, int flags) {
     scale = tigrEnforceScale(scale, flags);
 
     // Get the final window size.
-    dwStyle = WS_OVERLAPPEDWINDOW;
+    if (flags & TIGR_NORESIZE) {
+		dwStyle = WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX & ~WS_THICKFRAME;
+    } else {
+		dwStyle = WS_OVERLAPPEDWINDOW;
+    }
     rc.left = 0;
     rc.top = 0;
     rc.right = w * scale;

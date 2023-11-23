@@ -9,6 +9,9 @@
 
 #include "wren.h"
 #include "tigr.h"
+#include <time.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 typedef struct _phattResolutionMode {
 	int width;
@@ -21,3 +24,5 @@ typedef struct _phattScreenMode {
 	int targetFPS;
 } phattScreenMode;
 
+double phattGetTime();
+void phattSleep(double secs);
